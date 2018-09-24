@@ -2,9 +2,13 @@
 
 1) Supervised (s) vs. unsupervised systems (us)
 a) Given email labeled as spam/not spam, learn a spam filter. (s)
+   Because the program can classify as spam some email adresses and cause the loss of important information.
 b) Given a set of news articles found on the web, group them into sets of related articles. (us)
+   Because it's possibile to create specific rules to group the articles.
 c) Given a database of customer data, automatically discover market segments and group customers into different market segments. (us)
+   Because the segmentation can be done based on objective information.
 d) Given a dataset of patients diagnosed as either having glaucoma or not, learn to classify new patients as having glaucoma or not. (s)
+   In the medical sector it's always good to have a system Supervised because of the big responsability.
 
 1) Classification vs. regression systems
 Can we transform a regression problem into a classification problem? What would be the benefits of doing so ?
