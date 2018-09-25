@@ -12,6 +12,8 @@ After 30 iterations (epochs) we had no more missclasified lables. For more infor
  ![iter](iter.png)
  
  ## Exercise 4
+ see <a href='https://github.com/suizo12/TSM_DeLearn/blob/master/work01/iris.py'> iris data generator</a>
+ ![](https://github.com/suizo12/TSM_DeLearn/blob/master/work01/iris_plot.png)
  
  ## Exercise 5
  ### Supervised (s) vs. unsupervised systems (us)
