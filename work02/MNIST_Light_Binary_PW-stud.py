@@ -119,8 +119,6 @@ def predict(w, b, X, round=False):
     predictions -- a numpy array (vector) containing all predictions
     ''' 
     ### START YOUR CODE ###
-    print('shape w ', w.shape)
-    print('shape X ', X.shape)
 
     y = np.dot(w, X) + b
     #y = np.matmul(w,np.transpose(X))+b
@@ -169,10 +167,13 @@ def cost_CE(yhat, y):
     Cross Entropy Cost
     """    
     yhat, y, m = reshapey(yhat, y)
-    
     ### START YOUR CODE ###
     #from https://gist.github.com/Atlas7/22372a4f6b0846cfc3797766d7b529e8
-    cost = -(1.0/m) * np.sum(y*np.log(yhat) + (1-y)*np.log(1-yhat))
+
+    #1e-9 = zero
+    cost = -np.sum(y * np.log(yhat + 1e-9)) / m
+    #cost = -(1.0/m) * np.sum(y*np.log(yhat) + (1-y)*np.log(1-yhat))
+    print('cost: ', cost)
     return cost
     ### END YOUR CODE ###
 
@@ -403,7 +404,10 @@ def optimize(w, b, x_train, y_train, x_test, y_test, nepochs, alpha, cost_type="
         stepsize_b.append(t_b)
         train_costs.append(cost(predict(w, b, x_train, True), y_train)) #predict(w, b, X, round=False):
         test_costs.append(cost(predict(w, b, x_test, True), y_test))
-
+        #print('--')
+        #print('predict', predict(w, b, x_test))
+        ##print('cost', cost(predict(w, b, x_test), y_test))
+        #print('--')
         train_errors.append(error_rate(w, b, x_train, y_train))
         test_errors.append(error_rate(w, b, x_test, y_test))
         #print(cost(y, y))
