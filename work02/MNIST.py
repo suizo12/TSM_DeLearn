@@ -165,16 +165,19 @@ def cost_CE(yhat, y):
     
     Returns:
     Cross Entropy Cost
-    """    
+    """
     yhat, y, m = reshapey(yhat, y)
     ### START YOUR CODE ###
     #from https://gist.github.com/Atlas7/22372a4f6b0846cfc3797766d7b529e8
-
+    # -(1/m) * np.sum( y(i)log(h (x(i)))+(1y(i))log(1-h (x(i))) )
     #1e-9 = zero
-    cost = -np.sum(y * np.log(yhat + 1e-9)) / m
+    cost = 0
+    for i in range(0, m-1):
+        cost = cost + (y[0][i] * np.log(sigmoid(yhat[0][i])) + (1-y[0][i]) * np.log(1-sigmoid(yhat[0][i])))
+    #cost = -np.sum(y * np.log(yhat + 1e-9)) / m
     #cost = -(1.0/m) * np.sum(y*np.log(yhat) + (1-y)*np.log(1-yhat))
-    print('cost: ', cost)
-    return cost
+    #print('cost: ', -(1.0/m) * cost)
+    return -(1.0/m) * cost
     ### END YOUR CODE ###
 
 
