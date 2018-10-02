@@ -20,7 +20,6 @@
 
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib
 #get_ipython().run_line_magic('matplotlib', 'inline')
 
 from sklearn.datasets import load_digits
@@ -85,7 +84,7 @@ x_test = x_test1 / xmax
 
 # ### Perceptron-Model
 
-# In[ ]:
+# In[4]:
 
 
 def sigmoid(z):
@@ -97,11 +96,11 @@ def sigmoid(z):
     s -- sigmoid(z)
     """
     ### START YOUR CODE ###
-    return 1 / (1 + np.math.exp(-z))
+    return 1 / (1 + np.exp(-z))
     ### END YOUR CODE ###
 
 
-# In[65]:
+# In[5]:
 
 
 def predict(w, b, X, round=False):
@@ -119,9 +118,9 @@ def predict(w, b, X, round=False):
     predictions -- a numpy array (vector) containing all predictions
     ''' 
     ### START YOUR CODE ###
-
-    y = np.dot(w, X) + b
-    #y = np.matmul(w,np.transpose(X))+b
+    #y = np.dot(w, X) + b
+    y = sigmoid(np.dot(w, X) + b)
+    
     if round:
         y[y>=0] = 1.
         y[y<0] = 0.
@@ -152,7 +151,7 @@ def reshapey(yhat,y):
     return yhat, y, m
 
 
-# In[20]:
+# In[7]:
 
 
 def cost_CE(yhat, y):
@@ -164,20 +163,13 @@ def cost_CE(yhat, y):
     y    -- A scalar or numpy array with shape (1,m).
     
     Returns:
-    Cross Entropy Cost
     """
     yhat, y, m = reshapey(yhat, y)
-    ### START YOUR CODE ###
-    #from https://gist.github.com/Atlas7/22372a4f6b0846cfc3797766d7b529e8
-    # -(1/m) * np.sum( y(i)log(h (x(i)))+(1y(i))log(1-h (x(i))) )
-    #1e-9 = zero
-    cost = 0
-    for i in range(0, m-1):
-        cost = cost + (y[0][i] * np.log(sigmoid(yhat[0][i])) + (1-y[0][i]) * np.log(1-sigmoid(yhat[0][i])))
-    #cost = -np.sum(y * np.log(yhat + 1e-9)) / m
-    #cost = -(1.0/m) * np.sum(y*np.log(yhat) + (1-y)*np.log(1-yhat))
-    #print('cost: ', -(1.0/m) * cost)
-    return -(1.0/m) * cost
+    cost = -(1 / m) * np.sum(y * np.log(yhat) + (1-y)*np.log(1 - yhat))
+    #cost = 0
+    #for i in range(0, m-1):
+    #    cost = cost + (y[0][i] * np.log(sigmoid(yhat[0][i])) + (1-y[0][i]) * np.log(1-sigmoid(yhat[0][i])))
+    return cost
     ### END YOUR CODE ###
 
 
@@ -199,9 +191,7 @@ def cost_MSE(yhat, y):
 
     ### START YOUR CODE ###
     cost = 1 / (2*m) * np.sum((yhat - y)**2)
-    cost2 = np.square(np.subtract(yhat, y)).mean()
-    if cost != cost2:
-        raise Exception('not the same costs', cost, ' ', cost2)
+    
     return cost
     ### END YOUR CODE ###
 
@@ -212,7 +202,7 @@ def cost_MSE(yhat, y):
 # 
 # ![title](img/ce_update_rule.png)
 
-# In[61]:
+# In[9]:
 
 
 def step_CE(w, b, X, Y):
@@ -240,7 +230,7 @@ def step_CE(w, b, X, Y):
 
 # see page 40
 
-# In[14]:
+# In[10]:
 
 
 def step_MSE(w, b, X, Y):
@@ -259,8 +249,11 @@ def step_MSE(w, b, X, Y):
     ### START YOUR CODE ###
     n, m = X.shape
     yhat = predict(w, b, X)
-    w = w - b * np.dot((yhat - Y), X) 
-    b = b - b * np.sum(yhat - Y)
+    #w = w - b * np.dot((yhat - Y), X) 
+    #b = b - b * np.sum(yhat - Y)
+    # Folien 40
+    w = ((1/m) * np.sum(yhat*(1 - yhat)*(yhat - Y) * X))
+    b = ((1/m) * np.sum(yhat*(1 - yhat)*(yhat - Y)))
     return w, b
 
     ### END YOUR CODE ###
@@ -268,7 +261,7 @@ def step_MSE(w, b, X, Y):
 
 # ### For the Output Analysis 
 
-# In[15]:
+# In[11]:
 
 
 def error_rate(w, b, X, Y):
@@ -287,11 +280,12 @@ def error_rate(w, b, X, Y):
     return np.sum(Y !=predict(w, b, X, round=True))/Y.size
 
 
-# In[16]:
+# In[12]:
 
 
 import numpy as np 
 import matplotlib.pyplot as plt
+#get_ipython().run_line_magic('matplotlib', 'inline')
 
 PIXELS = (8,8)
 COLS = 5
@@ -320,7 +314,7 @@ def plot_digits(X,Y,indices):
 # 
 # #### Initialize Parameters
 
-# In[17]:
+# In[13]:
 
 
 def initialize_params(n, random=False):
@@ -347,7 +341,7 @@ def initialize_params(n, random=False):
 
 # #### Optimisation
 
-# In[45]:
+# In[ ]:
 
 
 def optimize(w, b, x_train, y_train, x_test, y_test, nepochs, alpha, cost_type="CE"):
@@ -398,22 +392,16 @@ def optimize(w, b, x_train, y_train, x_test, y_test, nepochs, alpha, cost_type="
         
     ### START YOUR CODE ###
     for e in range(nepochs):
-        #epochs.append(e)
         t_w, t_b = step(w, b, x_train, y_train)
         w = w - alpha * t_w
         b = b - alpha * t_b
         epochs.append(e)
-        stepsize_w.append(t_w)
-        stepsize_b.append(t_b)
-        train_costs.append(cost(predict(w, b, x_train, True), y_train)) #predict(w, b, X, round=False):
-        test_costs.append(cost(predict(w, b, x_test, True), y_test))
-        #print('--')
-        #print('predict', predict(w, b, x_test))
-        ##print('cost', cost(predict(w, b, x_test), y_test))
-        #print('--')
+        stepsize_w.append(alpha * t_w)
+        stepsize_b.append(alpha * t_b)
+        train_costs.append(cost(predict(w, b, x_train), y_train)) #predict(w, b, X, round=False):
+        test_costs.append(cost(predict(w, b, x_test), y_test))
         train_errors.append(error_rate(w, b, x_train, y_train))
         test_errors.append(error_rate(w, b, x_test, y_test))
-        #print(cost(y, y))
     
     ### END YOUR CODE ###
     
@@ -435,19 +423,19 @@ def optimize(w, b, x_train, y_train, x_test, y_test, nepochs, alpha, cost_type="
 
 # ### Run the Training for Specific Setting
 
-# In[66]:
+# In[ ]:
 
 
 # target digit
 target = 5 
 learning_rate = 0.5
-nepochs = 20
+nepochs = 200
 X_train = x_train
 Y_train = y_train==target
 X_test = x_test
 Y_test = y_test==target
 w,b = initialize_params(8*8)
-params, learning_curves = optimize(w, b, X_train, Y_train, X_test, Y_test, nepochs=nepochs,                                  alpha = learning_rate, cost_type="CE")
+params, learning_curves = optimize(w, b, X_train, Y_train, X_test, Y_test, nepochs=nepochs, alpha = learning_rate, cost_type="CE")
 
 
 # ### Plot Learning Curves
@@ -456,7 +444,7 @@ params, learning_curves = optimize(w, b, X_train, Y_train, X_test, Y_test, nepoc
 # Error Rate <br>
 # Learning Speed (Lenght of Parameter Change)<br>
 
-# In[ ]:
+# In[16]:
 
 
 plt.semilogy(learning_curves["epochs"], learning_curves["cost_train"], label="train")
@@ -469,7 +457,7 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
+# In[17]:
 
 
 plt.semilogy(learning_curves["epochs"], learning_curves["error_train"], label="train")
@@ -482,7 +470,7 @@ plt.legend()
 plt.show()
 
 
-# In[ ]:
+# In[18]:
 
 
 plt.semilogy(learning_curves["epochs"], learning_curves["step_w"], label="w")
