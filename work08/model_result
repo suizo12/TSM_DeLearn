@@ -27,3 +27,9 @@ B=32
 Test loss: 1.24319153881073
 Test accuracy: 0.5895
 Time per epoch: +-20sec
+
+#Model5 a more coplex model than model 3&4
+E=10
+B=32
+Test loss: 1.6170505167007447
+Test accuracy: 0.4621
