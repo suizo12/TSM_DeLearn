@@ -1,0 +1,29 @@
+#Model1
+E = 10
+B = 32  
+Test loss: 1.1335783016204835
+Test accuracy: 0.6259 
+Time per epoch: +-55sec
+
+#Model2 (changed epoch_size and batch_size)
+E = 15
+B = 64  
+Test loss: 1.1203591039657592
+Test accuracy: 0.631
+Time per epoch: +-50sec
+
+#Model3 (a complet new model, run on GPU)
+E=10
+B=32
+
+Test loss: 0.9671991050720214
+Test accuracy: 0.673
+Time per epoch: +-20sec
+
+#Model4 (same as model3 but: more epochs, changed dropout (lower) and padding to 'valid' which means "no padding", run on GPU)
+E=30
+B=32
+
+Test loss: 
+Test accuracy: 
+Time per epoch: +-20sec
