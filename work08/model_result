@@ -24,6 +24,6 @@ Time per epoch: +-20sec
 E=30
 B=32
 
-Test loss: 
-Test accuracy: 
+Test loss: 1.24319153881073
+Test accuracy: 0.5895
 Time per epoch: +-20sec
